@@ -6,6 +6,8 @@ import com.example.chatapplication.data.model.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class StorageRepository @Inject constructor(
@@ -15,16 +17,18 @@ class StorageRepository @Inject constructor(
 
     private lateinit var storageRef: StorageReference
 
-    fun saveUserInfo(user: User, uid: String, imageUri: Uri) {
+    fun saveUserInfo(user: User, uid: String, imageUri: Uri) = callbackFlow<String> {
         firestore.collection("User").document(uid)
             .set(user)
             .addOnSuccessListener {
                 Log.d("@@@", "saveUserInfo: User Information saved !!!")
+                trySend("Success")
                 uploadPic(uid, imageUri)
             }
             .addOnFailureListener {
                 Log.d("@@@", "saveUserInfo: Failed: Something went wrong !!!")
             }
+        awaitClose()
     }
 
     private fun uploadPic(uid: String, imageUri: Uri) {
