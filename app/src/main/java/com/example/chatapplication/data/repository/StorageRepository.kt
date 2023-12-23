@@ -17,16 +17,17 @@ class StorageRepository @Inject constructor(
 
     private lateinit var storageRef: StorageReference
 
-    fun saveUserInfo(user: User, uid: String, imageUri: Uri) = callbackFlow<String> {
+    fun saveUserInfo(user: User, uid: String, imageUri: Uri) = callbackFlow {
         firestore.collection("User").document(uid)
             .set(user)
             .addOnSuccessListener {
                 Log.d("@@@", "saveUserInfo: User Information saved !!!")
-                trySend("Success")
+                //upload profile picture in firebase storage
                 uploadPic(uid, imageUri)
+                trySend("Success")
             }
             .addOnFailureListener {
-                Log.d("@@@", "saveUserInfo: Failed: Something went wrong !!!")
+                Log.d("@@@", "saveUserInfo: Failed: $it")
             }
         awaitClose()
     }
@@ -37,10 +38,31 @@ class StorageRepository @Inject constructor(
         val imageRef = storageRef.child("image/$uid.jpg")
         imageRef.putFile(imageUri)
             .addOnSuccessListener {
+                //download image url for later use
+                imageRef.downloadUrl
+                    .addOnSuccessListener {
+                        val imgUrl = it.toString()
+                        Log.d("@@@", "imgUri: $imgUrl")
+                        updateImgUrl(uid, imgUrl)
+                    }
+                    .addOnFailureListener {
+                        Log.d("@@@", "imgUrl download failed: $it")
+                    }
                 Log.d("@@@", "saveProfilePic: Profile pic saved !!!")
             }
             .addOnFailureListener {
-                Log.d("@@@", "saveProfilePic: Upload failed !!!")
+                Log.d("@@@", "saveProfilePic: Upload failed: $it")
+            }
+    }
+
+    private fun updateImgUrl(uid: String, imgUrl: String) {
+        firestore.collection("User").document(uid)
+            .update("profilePicUrl", imgUrl)
+            .addOnSuccessListener {
+                Log.d("@@@", "Download URL updated successfully!")
+            }
+            .addOnFailureListener {
+                Log.d("@@@", "Download URL updated failed!: ${it.message}")
             }
     }
 }
