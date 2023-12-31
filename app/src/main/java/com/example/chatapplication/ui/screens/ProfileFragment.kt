@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.chatapplication.R
 import com.example.chatapplication.data.model.User
 import com.example.chatapplication.databinding.FragmentProfileBinding
 import com.example.chatapplication.viewmodel.StorageViewModel
@@ -49,7 +48,7 @@ class ProfileFragment : Fragment() {
         binding.btnSetupProfile.setOnClickListener {
             val name = binding.etName.text.toString()
             val bio = binding.etBio.text.toString()
-            val user = User(name, bio)
+            val user = User(uid, name, bio)
 
             viewModel.saveUserInfo(user, uid, imageUri)
         }
