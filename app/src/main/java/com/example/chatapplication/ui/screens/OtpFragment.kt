@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentOtpBinding
 import com.example.chatapplication.viewmodel.AuthViewModel
@@ -23,6 +25,7 @@ class OtpFragment : Fragment() {
     lateinit var authViewModel: AuthViewModel
     lateinit var verificationId: String
     lateinit var otpCode: String
+    private val args: OtpFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,11 +34,7 @@ class OtpFragment : Fragment() {
         authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         //receive verificationId sent from LoginFragment
-        setFragmentResultListener("rrr") { requestKey, bundle ->
-            // We use a String here, but any type that can be put in a Bundle is supported.
-            verificationId = bundle.getString("bbb").toString()
-            // Do something with the result.
-        }
+        verificationId = args.verificationId
 
         binding.btnVerify.setOnClickListener {
             authViewModel.signInWithPhoneAuthCredential(verificationId, otpCode)
@@ -43,9 +42,8 @@ class OtpFragment : Fragment() {
 
         authViewModel.verificationStatus.observe(viewLifecycleOwner, Observer {
             if(it == "Success"){
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, ProfileFragment())
-                    .commit()
+                val action = OtpFragmentDirections.actionOtpFragmentToProfileFragment()
+                findNavController().navigate(action)
             }else{
                 Toast.makeText(requireContext(), "Something went wrong !!!", Toast.LENGTH_SHORT).show()
             }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/recentConvFragment">
+    <fragment
+        android:id="@+id/recentConvFragment"
+        android:name="com.example.chatapplication.ui.screens.RecentConvFragment"
+        android:label="fragment_recent_conv"
+        tools:layout="@layout/fragment_recent_conv" >
+        <action
+            android:id="@+id/action_recentConvFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/peopleFragment"
+        android:name="com.example.chatapplication.ui.screens.PeopleFragment"
+        android:label="fragment_people"
+        tools:layout="@layout/fragment_people" />
+</navigation>

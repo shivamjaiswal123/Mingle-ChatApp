@@ -26,6 +26,7 @@ class UserAdapter(private val onItemClick: (User) -> Unit): RecyclerView.Adapter
         fun bind(user: User){
             binding.apply {
                 userName.text = user.name
+                userBio.text = user.bio
                 root.setOnClickListener {
                     onItemClick(user)
                 }

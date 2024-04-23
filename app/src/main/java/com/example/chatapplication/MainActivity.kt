@@ -11,10 +11,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //load LoginFragment screen in Fragment Container
-        if(savedInstanceState == null){
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, LoginFragment())
-                .commit()
-        }
+//        if(savedInstanceState == null){
+//            supportFragmentManager.beginTransaction()
+//                .add(R.id.fragment_container_view, LoginFragment())
+//                .commit()
+//        }
     }
 }

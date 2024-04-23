@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentLoginBinding
 import com.example.chatapplication.viewmodel.AuthViewModel
@@ -38,12 +39,9 @@ class LoginFragment : Fragment() {
 
         //move to OTP screen when OTP is sent
         authViewModel.verificationId.observe(viewLifecycleOwner, Observer {
-            //pass verificationId to OTP fragment
-            setFragmentResult("rrr", bundleOf("bbb" to it))
-            //open OtpFragment
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_view, OtpFragment())
-                .commit()
+            //pass verificationId also to OTP fragment
+            val action = LoginFragmentDirections.actionLoginFragmentToOtpFragment(it)
+            findNavController().navigate(action)
         })
 
         //if user logged in already then move to home screen
